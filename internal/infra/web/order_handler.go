@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/devfullcycle/20-CleanArch/internal/entity"
-	"github.com/devfullcycle/20-CleanArch/internal/usecase"
-	"github.com/devfullcycle/20-CleanArch/pkg/events"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/internal/entity"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/internal/usecase"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/pkg/events"
 )
 
 type WebOrderHandler struct {
@@ -24,6 +24,22 @@ func NewWebOrderHandler(
 		EventDispatcher:   EventDispatcher,
 		OrderRepository:   OrderRepository,
 		OrderCreatedEvent: OrderCreatedEvent,
+	}
+}
+
+func (h *WebOrderHandler) List(w http.ResponseWriter, r *http.Request) {
+	listOrders := usecase.NewListOrderUseCase(h.OrderRepository)
+	output, err := listOrders.Execute()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(output)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
