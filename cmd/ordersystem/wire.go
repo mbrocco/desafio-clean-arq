@@ -6,13 +6,13 @@ package main
 import (
 	"database/sql"
 
-	"github.com/devfullcycle/20-CleanArch/internal/entity"
-	"github.com/devfullcycle/20-CleanArch/internal/event"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/database"
-	"github.com/devfullcycle/20-CleanArch/internal/infra/web"
-	"github.com/devfullcycle/20-CleanArch/internal/usecase"
-	"github.com/devfullcycle/20-CleanArch/pkg/events"
 	"github.com/google/wire"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/internal/entity"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/internal/event"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/internal/infra/database"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/internal/infra/web"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/internal/usecase"
+	"github.com/mbrocco/goexpert/desafio-clean-arq/pkg/events"
 )
 
 var setOrderRepositoryDependency = wire.NewSet(
@@ -48,4 +48,12 @@ func NewWebOrderHandler(db *sql.DB, eventDispatcher events.EventDispatcherInterf
 		web.NewWebOrderHandler,
 	)
 	return &web.WebOrderHandler{}
+}
+
+func NewListOrderUseCase(db *sql.DB, eventDispatcher events.EventDispatcherInterface) *usecase.ListOrderUseCase {
+	wire.Build(
+		setOrderRepositoryDependency,
+		usecase.NewListOrderUseCase,
+	)
+	return &usecase.ListOrderUseCase{}
 }
